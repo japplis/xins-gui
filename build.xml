@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="US-ASCII" ?>
+<!--
+ -*- mode: Fundamental; tab-width: 4; -*-
+ ex:ts=4
+
+ $Id: build.xml,v 1.8 2005/11/02 15:49:20 znerd Exp $
+-->
+
+<project name="xins-gui" default="run" basedir=".">
+
+	<path id="classpath">
+        <pathelement path="lib/log4j.jar"       />
+        <pathelement path="lib/xins-common.jar" />
+        <pathelement path="lib/TableLayout.jar" />
+        <pathelement path="lib/jdom.jar"        />
+    </path>
+
+	<target name="-init">
+
+		<!-- General project properties -->
+		<property name="title"               value="Visual XINS"            />
+		<property name="name"                value="${ant.project.name}"    />
+		<property name="version"             value="0.1-dev"                />
+		<property name="vendor"              value="Wanadoo Nederland B.V." />
+
+		<!-- Java compiler-related properties -->
+		<property name="javac.targetvm"      value="1.3"   />
+		<property name="javac.debug"         value="true"  />
+		<property name="javac.deprecation"   value="true"  />
+		<property name="javac.optimize"      value="false" />
+	</target>
+
+	<target name="clean" description="Removes all generated files">
+		<delete dir="build" />
+		<delete dir="docs" />
+	</target>
+
+	<target name="compile" depends="-init">
+		<mkdir dir="build/classes" />
+		<javac
+		destdir="build/classes"
+		debug="${javac.debug}"
+		deprecation="${javac.deprecation}"
+		optimize="${javac.optimize}"
+		source="${javac.targetvm}"
+		target="${javac.targetvm}">
+			<src path="src/java" />
+			<classpath refid="classpath" />
+		</javac>
+		<manifest file="build/MANIFEST.MF">
+			<attribute name="Main-Class" value="org.xins.gui.Main" />
+			<attribute name="Class-Path" value="log4j.jar xins-common.jar TableLayout.jar jdom.jar" />
+			<section name="xins-gui">
+				<attribute name="Specification-Title"    value="${title}"   />
+				<attribute name="Specification-Version"  value="${version}" />
+				<attribute name="Specification-Vendor"   value="${vendor}"  />
+				<attribute name="Implementation-Title"   value="${title}"   />
+				<attribute name="Implementation-Version" value="${version}" />
+				<attribute name="Implementation-Vendor"  value="${vendor}"  />
+			</section>
+		</manifest>
+        <copy todir="build/classes/org/xins/gui">
+            <fileset dir="src">
+                <include name="icons/**/*.png" />
+            </fileset>
+        </copy>
+		<jar
+		jarfile="build/xins-gui.jar"
+		basedir="build/classes"
+		manifest="build/MANIFEST.MF">
+      </jar>
+	</target>
+
+	<target name="javadoc" depends="-init">
+		<mkdir dir="docs/javadoc" />
+		<javadoc
+		sourcepath="src/java"
+		destdir="docs/javadoc"
+		source="1.3"
+		version="yes"
+		use="yes"
+		author="yes"
+		private="no"
+		windowtitle="XINS GUI"
+		doctitle="XINS GUI"
+		bottom="XINS GUI application">
+			<packageset dir="src/java" />
+
+            <classpath refid="classpath" />
+
+			<link offline="true" packagelistloc="src/package-lists/j2se/"  href="http://java.sun.com/j2se/1.4.2/docs/api"   />
+			<link offline="true" packagelistloc="src/package-lists/log4j/" href="http://jakarta.apache.org/log4j/docs/api/" />
+			<link offline="true" packagelistloc="src/package-lists/jdom/"  href="http://www.jdom.org/docs/apidocs/"         />
+		</javadoc>
+	</target>
+
+    <target name="run" depends="compile">
+        <copy todir="build">
+            <fileset dir="lib">
+                <include name="**/*.jar" />
+            </fileset>
+        </copy>
+        <java jar="build/xins-gui.jar" fork="true">
+			<jvmarg value="-Dswing.aatext=true" />
+		</java>
+	</target>
+</project>
