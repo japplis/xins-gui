@@ -24,7 +24,7 @@
 		<property name="vendor"              value="Wanadoo Nederland B.V." />
 
 		<!-- Java compiler-related properties -->
-		<property name="javac.targetvm"      value="1.3"   />
+		<property name="javac.targetvm"      value="1.6"   />
 		<property name="javac.debug"         value="true"  />
 		<property name="javac.deprecation"   value="true"  />
 		<property name="javac.optimize"      value="false" />
@@ -76,7 +76,7 @@
 		<javadoc
 		sourcepath="src/java"
 		destdir="docs/javadoc"
-		source="1.3"
+		source="1.6"
 		version="yes"
 		use="yes"
 		author="yes"
